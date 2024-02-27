@@ -14,7 +14,6 @@ package co.edu.escuelaing.hangman.controller;
 
 import co.edu.escuelaing.hangman.GUI;
 import co.edu.escuelaing.hangman.model.FunctionModel;
-import co.edu.escuelaing.hangman.model.modelException;
 import co.edu.escuelaing.hangman.view.FunctionPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -72,11 +71,7 @@ public class FunctionController {
             }
         });
         panel.getPlayButton().addActionListener((ActionEvent e) -> {
-            try {
-                gameControllerReference.resetGame();
-            } catch (modelException ex) {
-                throw new RuntimeException(ex);
-            }
+            gameControllerReference.resetGame();
             rootController.changeVisibleCard(GUI.GAME_KEY);
         });
         panel.getHighScoresButton().addActionListener((ActionEvent e) -> {

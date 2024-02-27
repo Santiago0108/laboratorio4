@@ -13,6 +13,7 @@
 package co.edu.escuelaing.hangman.model;
 
 import co.edu.escuelaing.hangman.model.dictionary.HangmanDictionary;
+import co.edu.escuelaing.hangman.model.GameScore;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,9 @@ public class GameModel {
     private int correctCount;
     private LocalDateTime dateTime;
     private int gameScore;
+
+    private GameScore gamee;
+
     private int[] lettersUsed;
 
     private HangmanDictionary dictionary;
@@ -38,14 +42,15 @@ public class GameModel {
 
 
     @Autowired
-    public GameModel(HangmanDictionary dictionary) {
+    public GameModel(HangmanDictionary dictionary, GameScore score) {
         //this.dictionary = new EnglishDictionaryDataSource();
         this.dictionary = dictionary;
         randomWord = selectRandomWord();
         randomWordCharArray = randomWord.toCharArray();
         incorrectCount = 0;
         correctCount = 0;
-        gameScore = 100;
+
+        this.gamee = score;
 
     }
 
@@ -54,9 +59,12 @@ public class GameModel {
     public void reset() {
         randomWord = selectRandomWord();
         randomWordCharArray = randomWord.toCharArray();
-        incorrectCount = 0;
+        gamee.reset();
         correctCount = 0;
-        gameScore = 100;
+        incorrectCount = 0;
+        gamee.setCorrectCount(correctCount);
+        gamee.setIncorrectCount(incorrectCount);
+        gamee.calculateScore();
     }
 
     //setDateTime
@@ -78,12 +86,14 @@ public class GameModel {
         }
         if (positions.size() == 0) {
             incorrectCount++;
-            gameScore -= 10;
+            gamee.setIncorrectCount(incorrectCount);
         } else {
             correctCount += positions.size();
+            gamee.setCorrectCount(correctCount);
         }
+        gamee.calculateScore();
+        System.out.println(gamee.getScore());
         return positions;
-
     }
 
     //getDateTime
@@ -96,13 +106,7 @@ public class GameModel {
     //getScore
     //purpose: returns current score value
     public int getScore() {
-        return gameScore;
-    }
-
-    //setScore
-    //purpose: sets score value to points
-    public void setScore(int score) {
-        this.gameScore = score;
+        return gamee.getScore();
     }
 
     //name: selectRandomWord()
@@ -113,28 +117,32 @@ public class GameModel {
         return words.get(rand.nextInt(words.size()));
     }
 
+    public void setScore(int score){
+        gamee.setScore(score);
+    }
+
     //method: getIncorrectCount
     //purpose: return number of incorrect guesses made so far
     public int getIncorrectCount() {
-        return incorrectCount;
+        return gamee.getIncorrectCount();
     }
 
     //method: getCorrectCount
     //purpose: return number of correct guesses made so far
     public int getCorrectCount() {
-        return correctCount;
+        return gamee.getCorrectCount();
     }
 
     //method: getGameScore
     //purpose: return current score
     public int getGameScore() {
-        return gameScore;
+        return gamee.getScore();
     }
 
     //method: setGameScore
     //purpose: set current game score
     public void setGameScore(int gameScore) {
-        this.gameScore = gameScore;
+        this.gamee.setScore(gameScore);
     }
 
     //method: getWordLength

@@ -3,10 +3,10 @@ package co.edu.escuelaing.hangman;
 import co.edu.escuelaing.hangman.controller.*;
 import co.edu.escuelaing.hangman.model.*;
 import co.edu.escuelaing.hangman.model.dictionary.HangmanDictionary;
+import co.edu.escuelaing.hangman.model.GameScore;
 import co.edu.escuelaing.hangman.setup.factoryMethod.HangmanFactoryMethod;
 import co.edu.escuelaing.hangman.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.awt.*;
@@ -35,8 +35,7 @@ public class GUI {
     private Language language;
     private HangmanDictionary dictionary;
     private HangmanPanel hangmanPanel;
-
-    private GameScore gameScore;
+    private GameScore score;
 
     private MainFrameController mainFrameController;
 
@@ -52,7 +51,7 @@ public class GUI {
         this.language = factoryMethod.createLanguage();
         this.dictionary = factoryMethod.createDictionary();
         this.hangmanPanel = factoryMethod.createHangmanPanel();
-        this.gameScore = factoryMethod.createGameScore();
+        this.score = factoryMethod.createGameScore();
     }
 
     /* Example of second constructor
@@ -70,7 +69,7 @@ public class GUI {
     // method: setup
     // purpose: Create the various panels (game screens) for our game
     // and attach them to the main frame.
-    private void setup() throws modelException {
+    private void setup() {
         mainFrameController = new MainFrameController(
                 new MainFrameModel(PROJECT_NAME, 600, 400, null, EXIT_ON_CLOSE),
                 new MainFrame()
@@ -88,7 +87,8 @@ public class GUI {
                 mainFrameController
         );
 
-        GameModel gameModel = new GameModel(dictionary);
+        GameModel gameModel = new GameModel(dictionary,score);
+
         gameController = new GameController(
                 new GamePanel(gameModel.getCharacterSet(), hangmanPanel, language),
                 gameModel,
@@ -128,11 +128,7 @@ public class GUI {
     // then set the whole thing visible
     private void setupAndStart() {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            try {
-                setup();
-            } catch (modelException e) {
-                throw new RuntimeException(e);
-            }
+            setup();
             mainFrameController.changeVisibleCard(SPLASH_KEY);
             mainFrameController.getFrame().setVisible(true);
         });

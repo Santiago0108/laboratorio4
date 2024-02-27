@@ -16,7 +16,6 @@ package co.edu.escuelaing.hangman.controller;
 import co.edu.escuelaing.hangman.GUI;
 import co.edu.escuelaing.hangman.model.GameModel;
 import co.edu.escuelaing.hangman.model.Language;
-import co.edu.escuelaing.hangman.model.modelException;
 import co.edu.escuelaing.hangman.view.GamePanel;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -69,7 +68,8 @@ public class GameController {
                 panel.getPoints().setText(lan.getPointsNameLabel() + Integer.toString(model.getGameScore()));
                 int incorrectCount = model.getIncorrectCount();
                 int correctCount = model.getCorrectCount();
-                if (incorrectCount > 5 || correctCount == model.getWordLength()) {
+                int gameScore = model.getGameScore();
+                if (incorrectCount > 5 || correctCount == model.getWordLength() || gameScore < 0) {
                     panel.getSkipButton().setEnabled(false);
                     for (JButton button : panel.getKeyboardButtonArray()) {
                         button.setEnabled(false);
@@ -86,7 +86,7 @@ public class GameController {
             });
         }
 
-        model.setScore(100);
+        model.setGameScore(100);
 
         panel.addAncestorListener(new AncestorListener() {
             @Override
@@ -116,7 +116,7 @@ public class GameController {
         panel.getSkipButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                model.setScore(0);
+                model.setGameScore(0);
                 rootController.changeVisibleCard(GUI.GAME_OVER_KEY);
             }
 
@@ -137,7 +137,7 @@ public class GameController {
 
     //method: resetGame
     //purpose: reset associated view and controller for a new game
-    public void resetGame() throws modelException {
+    public void resetGame() {
         model.reset();
         panel.getPoints().setText(lan.getPointsNameLabel() + Integer.toString(model.getGameScore()));
         panel.addBlanks(model.getWordLength());

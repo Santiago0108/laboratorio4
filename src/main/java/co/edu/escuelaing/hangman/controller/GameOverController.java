@@ -16,7 +16,6 @@ package co.edu.escuelaing.hangman.controller;
 import co.edu.escuelaing.hangman.GUI;
 import co.edu.escuelaing.hangman.model.GameOverModel;
 import co.edu.escuelaing.hangman.model.Language;
-import co.edu.escuelaing.hangman.model.modelException;
 import co.edu.escuelaing.hangman.view.GameOverPanel;
 
 import javax.swing.event.AncestorEvent;
@@ -54,11 +53,7 @@ public class GameOverController {
         panel.getMenuButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                try {
-                    gameControllerReference.resetGame();
-                } catch (modelException e) {
-                    throw new RuntimeException(e);
-                }
+                gameControllerReference.resetGame();
                 rootController.changeVisibleCard(GUI.FUNCTION_KEY);
             }
         });
@@ -66,11 +61,7 @@ public class GameOverController {
         panel.getResetButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                try {
-                    gameControllerReference.resetGame();
-                } catch (modelException e) {
-                    throw new RuntimeException(e);
-                }
+                gameControllerReference.resetGame();
                 rootController.changeVisibleCard(GUI.GAME_KEY);
             }
         });
@@ -78,7 +69,7 @@ public class GameOverController {
         panel.addAncestorListener(new AncestorListener() {
             @Override
             public void ancestorAdded(AncestorEvent event) {
-                panel.getScoreLabel().setText(lan.getFinalScorelabel() + gameControllerReference.getModel().getScore());
+                panel.getScoreLabel().setText(lan.getFinalScorelabel() + gameControllerReference.getModel().getGameScore());
             }
 
             @Override

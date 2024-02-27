@@ -3,22 +3,24 @@ package co.edu.escuelaing.hangman.model;
 import org.springframework.stereotype.Component;
 
 @Component("originalScore")
-public class OriginalScore implements GameScore{
+public class OriginalScore extends GameScore{
     private int puntaje;
     public OriginalScore(){
-        this.puntaje=100;
+        incorrectCount = 0;
+        correctCount = 0;
+        gameScore=100;
     }
 
-    public int calculateScore(int correctCount, int incorrectCount)throws modelException {
-        if(correctCount <0 || incorrectCount <0 ){
-            throw new modelException("Parametros Invalidos.");
+    @Override
+    public void calculateScore() {
+        gameScore = gameScore - (incorrectCount*10);
+        if (gameScore < 0){
+            gameScore = 0;
         }
-        int respuesta = 0;
-        respuesta = puntaje - (incorrectCount*10);
-        if (respuesta < 0){
-            respuesta = 0;
-        }
-        return respuesta;
     }
 
+    @Override
+    public void reset() {
+        gameScore = 100;
+    }
 }
